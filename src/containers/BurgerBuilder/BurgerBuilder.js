@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import Aux from '../../hoc/Auxiliary'
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
+import Modal from '../../components/UI/Modal/Modal'
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -20,6 +22,14 @@ class BurgerBuilder extends Component {
             meat: 0,
         },
         totalPrice: 4,
+        purchasable: false,
+    }
+
+    updatePurchaseState(ingredients) {
+        const totalIngredients = Object.keys(ingredients).reduce((acc, key) => {
+            return acc + ingredients[key]
+        }, 0)
+        this.setState({ purchasable: totalIngredients > 0 })
     }
 
     addIngredientHandler = (type) => {
@@ -32,6 +42,7 @@ class BurgerBuilder extends Component {
             ingredients: updatedIngredients,
             totalPrice: totalPrice,
         })
+        this.updatePurchaseState(updatedIngredients);
     };
 
     removeIngredientHandler = (type) => {
@@ -45,6 +56,7 @@ class BurgerBuilder extends Component {
                 ingredients: updatedIngredients,
                 totalPrice: totalPrice,
             })
+            this.updatePurchaseState(updatedIngredients);
         }
     };
 
@@ -55,11 +67,16 @@ class BurgerBuilder extends Component {
         };
         return (
             <Aux>
+                <Modal>
+                    <OrderSummary ingredients={this.state.ingredients} />
+                </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
+                    price={this.state.totalPrice}
                     ingredientAdded={this.addIngredientHandler}
                     ingredientRemoved={this.removeIngredientHandler}
-                    disabled={disabledInfo} />
+                    disabled={disabledInfo}
+                    purchasable={this.state.purchasable} />
             </Aux>
         );
     }
