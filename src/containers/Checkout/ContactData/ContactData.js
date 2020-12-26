@@ -16,6 +16,10 @@ class Name extends Component {
         placeholder: '',
       },
       value: '',
+      validation: {
+        required: true,
+      },
+      valid: false,
     }
     const usersName = { ...formField }
     usersName.elConfig = {
@@ -50,6 +54,7 @@ class Name extends Component {
         { value: 'poor', displayValue: 'Poor' },
       ],
     }
+    deliveryMethod.valid = true
 
     this.state = {
       orderForm: {
@@ -67,11 +72,16 @@ class Name extends Component {
   orderHandler = (e) => {
     e.preventDefault()
     this.setState({ loading: true })
+    const formData = {}
+    for (let key in this.state.orderForm) {
+      formData[key] = this.state.orderForm[key].value
+    }
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
       // do not sent price data like this in production. Calculate total price on server;
       // user may try to modify totalPrice before request is sent.
+      orederData: formData,
     }
     axios
       .post('orders.json/', order)
@@ -87,6 +97,38 @@ class Name extends Component {
     console.log(this.props.ingredients)
   }
 
+  checkValidity(value, rules) {
+
+    if (rules.required && value.trim() === '') {
+        return false
+      }
+
+    if (rules.minLength && value.length < rules.minLength) {
+      return false
+    }
+
+    if (rules.maxLength && value.length > rules.maxLength ) {
+      return false
+    }
+
+    return true
+  }
+
+  inputChangedHandler = (e, key) => {
+    const updatedOrderForm = {
+      ...this.state.orderForm,
+    }
+    const updatedFormEl = { ...updatedOrderForm[key] }
+    updatedFormEl.value = e.target.value
+    updatedFormEl.valid = this.checkValidity(
+      updatedFormEl.value,
+      updatedFormEl.validation,
+    )
+    updatedOrderForm[key] = updatedFormEl
+    console.log(updatedFormEl)
+    this.setState({ orderForm: updatedOrderForm })
+  }
+
   render() {
     const formElsArray = Object.keys(this.state.orderForm).map((key) => {
       return (
@@ -95,16 +137,15 @@ class Name extends Component {
           elType={this.state.orderForm[key].elType}
           elConfig={this.state.orderForm[key].elConfig}
           value={this.state.orderForm[key].value}
+          changed={(e) => this.inputChangedHandler(e, key)}
         />
       )
     })
 
     let form = (
-      <form>
+      <form onSubmit={this.orderHandler}>
         {formElsArray}
-        <Button btnType="Success" clicked={this.orderHandler}>
-          ORDER
-        </Button>
+        <Button btnType="Success">ORDER</Button>
       </form>
     )
     if (this.state.loading) {
