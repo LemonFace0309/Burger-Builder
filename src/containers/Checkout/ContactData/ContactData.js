@@ -20,6 +20,7 @@ class Name extends Component {
         required: true,
       },
       valid: false,
+      touched: false,
     }
     const usersName = { ...formField }
     usersName.elConfig = {
@@ -54,6 +55,7 @@ class Name extends Component {
         { value: 'poor', displayValue: 'Poor' },
       ],
     }
+    deliveryMethod.value = "fastest"
     deliveryMethod.valid = true
 
     this.state = {
@@ -65,6 +67,7 @@ class Name extends Component {
         email: email,
         deliveryMethod: deliveryMethod,
       },
+      formIsValid: false,
       loading: false,
     }
   }
@@ -98,16 +101,15 @@ class Name extends Component {
   }
 
   checkValidity(value, rules) {
-
     if (rules.required && value.trim() === '') {
-        return false
-      }
+      return false
+    }
 
     if (rules.minLength && value.length < rules.minLength) {
       return false
     }
 
-    if (rules.maxLength && value.length > rules.maxLength ) {
+    if (rules.maxLength && value.length > rules.maxLength) {
       return false
     }
 
@@ -124,19 +126,28 @@ class Name extends Component {
       updatedFormEl.value,
       updatedFormEl.validation,
     )
+    updatedFormEl.touched = true
     updatedOrderForm[key] = updatedFormEl
     console.log(updatedFormEl)
-    this.setState({ orderForm: updatedOrderForm })
+
+    let formIsValid = Object.keys(updatedOrderForm).reduce((acc, key) => {
+      return acc && updatedOrderForm[key].valid
+    }, true)
+
+    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid })
   }
 
   render() {
     const formElsArray = Object.keys(this.state.orderForm).map((key) => {
+      const formEl = this.state.orderForm[key]
       return (
         <Input
           key={key}
-          elType={this.state.orderForm[key].elType}
-          elConfig={this.state.orderForm[key].elConfig}
-          value={this.state.orderForm[key].value}
+          elType={formEl.elType}
+          elConfig={formEl.elConfig}
+          value={formEl.value}
+          invalid={!formEl.valid}
+          touched={formEl.touched}
           changed={(e) => this.inputChangedHandler(e, key)}
         />
       )
@@ -145,7 +156,7 @@ class Name extends Component {
     let form = (
       <form onSubmit={this.orderHandler}>
         {formElsArray}
-        <Button btnType="Success">ORDER</Button>
+        <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
       </form>
     )
     if (this.state.loading) {
