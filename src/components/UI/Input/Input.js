@@ -24,6 +24,19 @@ const input = (props) => {
         />
       )
       break
+    case 'select':
+      el = (
+        <select className={classes.InputEl} value={props.value}>
+          {props.elConfig.options.map((option) => {
+            return (
+              <option key={option.value} value={option.value}>
+                {option.displayValue}
+              </option>
+            )
+          })}
+        </select>
+      )
+      break
     default:
       el = (
         <input

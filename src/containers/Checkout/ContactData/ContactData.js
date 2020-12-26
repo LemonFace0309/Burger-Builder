@@ -46,8 +46,8 @@ class Name extends Component {
     deliveryMethod.elType = 'select'
     deliveryMethod.elConfig = {
       options: [
-        { value: 'fastest', deplayValue: 'Fastest' },
-        { value: 'poor', deplayValue: 'Poor' },
+        { value: 'fastest', displayValue: 'Fastest' },
+        { value: 'poor', displayValue: 'Poor' },
       ],
     }
 
