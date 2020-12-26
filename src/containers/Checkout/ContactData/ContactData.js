@@ -4,16 +4,64 @@ import axios from '../../../axios'
 import classes from './ContactData.module.css'
 import Button from '../../../components/UI/Button/Button'
 import Spinner from '../../../components/UI/Spinner/Spinner'
+import Input from '../../../components/UI/Input/Input'
 
 class Name extends Component {
-  state = {
-    name: '',
-    email: '',
-    addres: {
-      street: '',
-      postalCode: '',
-    },
-    loading: false,
+  constructor() {
+    super()
+    const formField = {
+      elType: 'input',
+      elConfig: {
+        type: 'text',
+        placeholder: '',
+      },
+      value: '',
+    }
+    const usersName = { ...formField }
+    usersName.elConfig = {
+      type: 'text',
+      placeholder: 'Your Name',
+    }
+    const street = { ...formField }
+    street.elConfig = {
+      type: 'text',
+      placeholder: 'Street',
+    }
+    const postalCode = { ...formField }
+    postalCode.elConfig = {
+      type: 'text',
+      placeholder: 'Postal Code',
+    }
+    const country = { ...formField }
+    country.elConfig = {
+      type: 'text',
+      placeholder: 'Country',
+    }
+    const email = { ...formField }
+    email.elConfig = {
+      type: 'text',
+      placeholder: 'Email',
+    }
+    const deliveryMethod = { ...formField }
+    deliveryMethod.elType = 'select'
+    deliveryMethod.elConfig = {
+      options: [
+        { value: 'fastest', deplayValue: 'Fastest' },
+        { value: 'poor', deplayValue: 'Poor' },
+      ],
+    }
+
+    this.state = {
+      orderForm: {
+        name: usersName,
+        street: street,
+        postalCode: postalCode,
+        country: country,
+        email: email,
+        deliveryMethod: deliveryMethod,
+      },
+      loading: false,
+    }
   }
 
   orderHandler = (e) => {
@@ -24,16 +72,6 @@ class Name extends Component {
       price: this.props.totalPrice,
       // do not sent price data like this in production. Calculate total price on server;
       // user may try to modify totalPrice before request is sent.
-      customer: {
-        name: 'Charles',
-        address: {
-          street: '123 Main St.',
-          postalCode: 'M1V 1B2',
-          country: 'Canada',
-        },
-        email: 'test@test.com',
-      },
-      deliveryMethod: 'UberEats',
     }
     axios
       .post('orders.json/', order)
@@ -50,32 +88,20 @@ class Name extends Component {
   }
 
   render() {
+    const formElsArray = Object.keys(this.state.orderForm).map((key) => {
+      return (
+        <Input
+          key={key}
+          elType={this.state.orderForm[key].elType}
+          elConfig={this.state.orderForm[key].elConfig}
+          value={this.state.orderForm[key].value}
+        />
+      )
+    })
+
     let form = (
       <form>
-        <input
-          className={classes.Input}
-          type="text"
-          name="name"
-          placeholder="Your name"
-        />
-        <input
-          className={classes.Input}
-          type="text"
-          name="email"
-          placeholder="Your Email"
-        />
-        <input
-          className={classes.Input}
-          type="text"
-          name="street"
-          placeholder="Your Street"
-        />
-        <input
-          className={classes.Input}
-          type="text"
-          name="Postal Code"
-          placeholder="Postal Code"
-        />
+        {formElsArray}
         <Button btnType="Success" clicked={this.orderHandler}>
           ORDER
         </Button>
