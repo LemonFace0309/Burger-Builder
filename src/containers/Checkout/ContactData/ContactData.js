@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import axios from '../../../axios'
 import classes from './ContactData.module.css'
@@ -171,4 +172,11 @@ class Name extends Component {
   }
 }
 
-export default Name
+const mapStateToProps = (state) => {
+  return {
+    ingredients: state.ingredients,
+    totalPrice: state.totalPrice,
+  }
+}
+
+export default connect(mapStateToProps)(Name)
