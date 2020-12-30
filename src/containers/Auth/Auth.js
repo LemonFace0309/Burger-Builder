@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 import classes from './Auth.module.css'
+import checkValidity from '../../shared/checkValidity'
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import Spinner from '../../components/UI/Spinner/Spinner'
@@ -49,39 +50,13 @@ class Auth extends Component {
     }
   }
 
-  checkValidity(value, rules) {
-    if (rules.required && value.trim() === '') {
-      return false
-    }
-
-    if (rules.minLength && value.length < rules.minLength) {
-      return false
-    }
-
-    if (rules.maxLength && value.length > rules.maxLength) {
-      return false
-    }
-
-    const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-    if (rules.isEmail && !emailPattern.test(value)) {
-      return false
-    }
-
-    const numericPatter = /^\d+$/
-    if (rules.isNumberic && !numericPatter.test(value)) {
-      return false
-    }
-
-    return true
-  }
-
   inputChangedHandler = (e, key) => {
     const updatedControls = {
       ...this.state.controls,
       [key]: {
         ...this.state.controls[key],
         value: e.target.value,
-        valid: this.checkValidity(
+        valid: checkValidity(
           e.target.value,
           this.state.controls[key].validation,
         ),

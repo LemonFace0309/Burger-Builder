@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import axios from '../../../axios'
 import classes from './ContactData.module.css'
+import checkValidity from '../../../shared/checkValidity'
 import Button from '../../../components/UI/Button/Button'
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import Input from '../../../components/UI/Input/Input'
@@ -91,35 +92,18 @@ class Name extends Component {
     this.props.onPurchaseBurger(order, this.props.token)
   }
 
-  checkValidity(value, rules) {
-    if (rules.required && value.trim() === '') {
-      return false
-    }
-
-    if (rules.minLength && value.length < rules.minLength) {
-      return false
-    }
-
-    if (rules.maxLength && value.length > rules.maxLength) {
-      return false
-    }
-
-    return true
-  }
-
   inputChangedHandler = (e, key) => {
     const updatedOrderForm = {
       ...this.state.orderForm,
     }
     const updatedFormEl = { ...updatedOrderForm[key] }
     updatedFormEl.value = e.target.value
-    updatedFormEl.valid = this.checkValidity(
+    updatedFormEl.valid = checkValidity(
       updatedFormEl.value,
       updatedFormEl.validation,
     )
     updatedFormEl.touched = true
     updatedOrderForm[key] = updatedFormEl
-    console.log(updatedFormEl)
 
     let formIsValid = Object.keys(updatedOrderForm).reduce((acc, key) => {
       return acc && updatedOrderForm[key].valid
