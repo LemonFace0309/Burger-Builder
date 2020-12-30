@@ -81,6 +81,7 @@ class Name extends Component {
       formData[key] = this.state.orderForm[key].value
     }
     const order = {
+      userId: this.props.userId,
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
       // do not sent price data like this in production. Calculate total price on server;
@@ -167,6 +168,7 @@ const mapStateToProps = (state) => {
     totalPrice: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
     token: state.auth.token,
+    userId: state.auth.userId,
   }
 }
 
