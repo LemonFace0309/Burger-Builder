@@ -36,9 +36,9 @@ class App extends Component {
         <Switch>
           <Route
             path="/checkout"
-            render={(props) => (
+            render={() => (
               <Suspense fallback={<div>Loading...</div>}>
-                <Checkout {...props} />
+                <Checkout />
               </Suspense>
             )}
           />
