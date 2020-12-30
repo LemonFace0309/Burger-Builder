@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 
 import classes from './Auth.module.css'
 import Input from '../../components/UI/Input/Input'
@@ -40,6 +41,12 @@ class Auth extends Component {
       },
     },
     isSignup: true,
+  }
+
+  componentDidMount() {
+    if (!this.props.burgerInProgress && this.props.authRedirectPath !== '/') {
+      this.props.onSetAuthRedirectPath()
+    }
   }
 
   checkValidity(value, rules) {
@@ -117,13 +124,23 @@ class Auth extends Component {
 
     let header = <h3>Signup</h3>
     if (!this.state.isSignup) {
-      header = <div><h3>Login</h3><p>Email: test@test.com</p><p>Password: 123456</p></div>
+      header = (
+        <div>
+          <h3>Login</h3>
+          <p>Email: test@test.com</p>
+          <p>Password: 123456</p>
+        </div>
+      )
     }
 
     let errorMessage = null
     if (this.props.error) {
-      const  errorMsg = this.props.error.message.split('_').join(' ')
-      errorMessage = <p style={{'color': 'red'}}><strong>{errorMsg}</strong></p>
+      const errorMsg = this.props.error.message.split('_').join(' ')
+      errorMessage = (
+        <p style={{ color: 'red' }}>
+          <strong>{errorMsg}</strong>
+        </p>
+      )
     }
 
     let form = <Spinner />
@@ -135,8 +152,15 @@ class Auth extends Component {
         </form>
       )
     }
+
+    let authRedirect = null
+    if (this.props.isAuthenticated) {
+      authRedirect = <Redirect to={this.props.authRedirectPath} />
+    }
+
     return (
       <div className={classes.Auth}>
+        {authRedirect}
         {header}
         {errorMessage}
         {form}
@@ -152,6 +176,9 @@ const mapStateToProps = (state) => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
+    isAuthenticated: state.auth.token !== null,
+    burgerInProgress: state.burgerBuilder.inProgress,
+    authRedirectPath: state.auth.authRedirectPath,
   }
 }
 
@@ -159,6 +186,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onSignup: (email, password, isSignup) =>
       dispatch(actionCreators.auth(email, password, isSignup)),
+    onSetAuthRedirectPath: () =>
+      dispatch(actionCreators.setAuthRedirectPath('/')),
   }
 }
 
