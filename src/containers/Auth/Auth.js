@@ -115,6 +115,11 @@ class Auth extends Component {
       )
     })
 
+    let header = <h3>Signup</h3>
+    if (!this.state.isSignup) {
+      header = <div><h3>Login</h3><p>Email: test@test.com</p><p>Password: 123456</p></div>
+    }
+
     let errorMessage = null
     if (this.props.error) {
       const  errorMsg = this.props.error.message.split('_').join(' ')
@@ -132,6 +137,7 @@ class Auth extends Component {
     }
     return (
       <div className={classes.Auth}>
+        {header}
         {errorMessage}
         {form}
         <Button btnType="Danger" clicked={this.switchModeHandler}>

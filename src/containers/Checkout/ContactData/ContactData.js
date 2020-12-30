@@ -87,7 +87,7 @@ class Name extends Component {
       // user may try to modify totalPrice before request is sent.
       orderData: formData,
     }
-    this.props.onPurchaseBurger(order)
+    this.props.onPurchaseBurger(order, this.props.token)
   }
 
   checkValidity(value, rules) {
@@ -166,12 +166,13 @@ const mapStateToProps = (state) => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
+    token: state.auth.token,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onPurchaseBurger: (orderData) => dispatch(actionCreators.purchaseBurger(orderData))
+    onPurchaseBurger: (orderData, token) => dispatch(actionCreators.purchaseBurger(orderData, token))
   }
 }
 
