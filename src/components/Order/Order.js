@@ -6,6 +6,7 @@ const order = (props) => {
   const ingredients = Object.keys(props.ingredients).map((key) => {
     return (
       <span
+        key={key}
         style={{
           textTransform: 'capitalize',
           display: 'inline-block',
@@ -14,8 +15,7 @@ const order = (props) => {
           padding: '5px',
         }}
       >
-        {' '}
-        {key + ' (' + props.ingredients[key] + ')'}{' '}
+        {key + ' (' + props.ingredients[key] + ')'}
       </span>
     )
   })

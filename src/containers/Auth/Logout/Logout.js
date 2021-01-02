@@ -7,6 +7,7 @@ import * as actionCreators from '../../../store/actions/index'
 const Logout = (props) => {
   useEffect(() => {
     props.onLogout()
+  // eslint-disable-next-line
   }, [])
 
   return <Redirect to="/" />
