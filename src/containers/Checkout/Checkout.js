@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Route, Redirect, withRouter } from 'react-router-dom'
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary'
 import ContactData from './ContactData/ContactData'
 
-class Checkout extends Component {
+const Checkout = props => {
 
   // componentDidMount() {
   //   console.log(this.props)
@@ -23,28 +23,27 @@ class Checkout extends Component {
   //   this.setState({ ingredients: ingredients, totalPrice: price })
   // }
 
-  checkoutContinuedHandler = () => {
-    this.props.history.replace('/checkout/contact-data')
+  const checkoutContinuedHandler = () => {
+    props.history.replace('/checkout/contact-data')
   }
 
-  checkoutCancelledHandler = () => {
-    this.props.history.goBack()
+  const checkoutCancelledHandler = () => {
+    props.history.goBack()
   }
 
-  render() {
     let summary = <Redirect to="/" />
-    if (this.props.ingredients) { 
-      const purchasedRedirect = this.props.purchased ? this.props.history.push('/') : null
+    if (props.ingredients) { 
+      const purchasedRedirect = props.purchased ? props.history.push('/') : null
       summary = (
         <div>
           {purchasedRedirect}
           <CheckoutSummary
-            ingredients={this.props.ingredients}
-            checkoutContinued={this.checkoutContinuedHandler}
-            checkoutCancelled={this.checkoutCancelledHandler}
+            ingredients={props.ingredients}
+            checkoutContinued={checkoutContinuedHandler}
+            checkoutCancelled={checkoutCancelledHandler}
           />
           <Route
-            path={this.props.match.url + '/contact-data'}
+            path={props.match.url + '/contact-data'}
             component={ContactData}
             // render={(props) => (
             //   <ContactData
@@ -58,7 +57,6 @@ class Checkout extends Component {
       )
     }
     return summary
-  }
 }
 
 const mapStateToProps = (state) => {
