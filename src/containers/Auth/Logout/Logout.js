@@ -5,10 +5,11 @@ import { Redirect } from 'react-router-dom'
 import * as actionCreators from '../../../store/actions/index'
 
 const Logout = (props) => {
+  const { onLogout } = props
+
   useEffect(() => {
-    props.onLogout()
-  // eslint-disable-next-line
-  }, [])
+    onLogout()
+  }, [onLogout])
 
   return <Redirect to="/" />
 }

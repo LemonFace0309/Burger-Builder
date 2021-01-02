@@ -47,8 +47,7 @@ const Auth = (props) => {
     if (!burgerInProgress && authRedirectPath !== '/') {
       onSetAuthRedirectPath()
     }
-  // eslint-disable-next-line
-  }, [])
+  }, [burgerInProgress, authRedirectPath, onSetAuthRedirectPath])
 
   const inputChangedHandler = (e, key) => {
     const updatedControls = {
